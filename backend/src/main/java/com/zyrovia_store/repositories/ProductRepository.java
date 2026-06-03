@@ -10,5 +10,5 @@ import com.zyrovia_store.entities.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-	List<Product> findByTitleContainingIgnoreCase(String keyword);
+	List<Product> findByNameContainingIgnoreCase(String keyword);
 }

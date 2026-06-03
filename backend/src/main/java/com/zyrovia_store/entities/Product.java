@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -33,18 +34,19 @@ public class Product {
 	private Long id;
 
 	@Column(nullable = false)
-	private String title;
+	private String name;
 
-	@Column(length = 1000)
+	@Lob
+	@Column(columnDefinition = "TEXT")
 	private String description;
 
-	@Column(nullable = false)
+	@Column(nullable = false, precision = 10, scale = 2)
 	private BigDecimal price;
 
 	@Column(nullable = false)
 	private Integer stock;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 500)
 	private String imageUrl;
 
 	@ManyToOne(fetch = FetchType.LAZY)
