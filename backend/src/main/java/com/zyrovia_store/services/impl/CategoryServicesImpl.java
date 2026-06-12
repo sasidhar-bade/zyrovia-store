@@ -63,7 +63,7 @@ public class CategoryServicesImpl implements ICategoryServices {
 
 	// update an existing Category
 	@Override
-	public CategoryResponseDto updaCategory(Long id, CategoryRequestDto categoryRequestDto) {
+	public CategoryResponseDto updateCategory(Long id, CategoryRequestDto categoryRequestDto) {
 
 		// find existing Category
 		Category category = this.categoryRepository.findById(id)

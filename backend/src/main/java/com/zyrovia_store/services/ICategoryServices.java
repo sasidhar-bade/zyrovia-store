@@ -15,7 +15,7 @@ public interface ICategoryServices {
 
 //	List<CategoryResponseDto> searchCategory(String keyword);
 
-	CategoryResponseDto updaCategory(Long id, CategoryRequestDto categoryRequestDto);
+	CategoryResponseDto updateCategory(Long id, CategoryRequestDto categoryRequestDto);
 
 	void deleteCategory(Long id);
 

@@ -55,7 +55,7 @@ public class CategoryController {
 	public ResponseEntity<CategoryResponseDto> updateCategoryApiHandler(@PathVariable Long id,
 			@RequestBody CategoryRequestDto requestDto) {
 
-		return ResponseEntity.ok(this.categoryServices.updaCategory(id, requestDto));
+		return ResponseEntity.ok(this.categoryServices.updateCategory(id, requestDto));
 	}
 
 	// Delete Category in category table in database API Call
