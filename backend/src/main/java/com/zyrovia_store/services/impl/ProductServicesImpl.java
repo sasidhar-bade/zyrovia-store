@@ -54,6 +54,9 @@ public class ProductServicesImpl implements IProductServices {
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"Category not found with id : " + productRequestDto.getCategoryId()));
 
+//		// Convert DTO to Entity
+//		Product product = mapper.map(productRequestDto, Product.class);
+
 		Product product = new Product();
 
 		product.setName(productRequestDto.getName());
@@ -61,14 +64,6 @@ public class ProductServicesImpl implements IProductServices {
 		product.setPrice(productRequestDto.getPrice());
 		product.setStock(productRequestDto.getStock());
 		product.setImageUrl(productRequestDto.getImageUrl());
-
-		product.setCategory(category);
-
-//		// Convert DTO to Entity
-//		Product product = mapper.map(productRequestDto, Product.class);
-
-		System.out.println("Mapped Product ID = " + product.getId());
-		System.out.println("Mapped Category ID = " + product.getCategory().getId());
 
 		// Set category relationship
 		product.setCategory(category);
