@@ -1,5 +1,6 @@
 package com.zyrovia_store.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -35,6 +36,7 @@ public class Cart {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
+	@Builder.Default
 	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<CartItem> cartItems;
+	private List<CartItem> cartItems = new ArrayList<>();
 }

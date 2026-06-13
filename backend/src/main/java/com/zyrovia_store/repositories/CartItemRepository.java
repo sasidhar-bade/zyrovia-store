@@ -10,5 +10,5 @@ import com.zyrovia_store.entities.CartItem;
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
-	List<CartItem> findByCartId(Long cartId);
+	List<CartItem> findByCartIdAndProductId(Long cartId, Long productId);
 }
