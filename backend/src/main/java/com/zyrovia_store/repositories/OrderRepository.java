@@ -10,5 +10,5 @@ import com.zyrovia_store.entities.Order;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-	List<Order> findByUserId(Long userId);
+	List<Order> findByUser_Id(Long userId);
 }
