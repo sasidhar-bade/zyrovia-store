@@ -1,0 +1,361 @@
+!SESSION 2026-06-09 19:47:59.629 -----------------------------------------------
+eclipse.buildId=4.39.0.202603170703
+java.version=25.0.2
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_IN
+Framework arguments:  -product org.springframework.boot.ide.branding.springtools
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.springframework.boot.ide.branding.springtools
+
+!ENTRY ch.qos.logback.classic 1 0 2026-06-09 19:48:03.835
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY ch.qos.logback.classic 1 0 2026-06-09 19:48:30.835
+!MESSAGE Logback config file: D:\MyProjects\zyrovia-store\backend\.metadata\.plugins\org.eclipse.m2e.logback\logback.2.7.101.20251017-1242.xml
+
+!ENTRY org.eclipse.ui 2 0 2026-06-09 19:48:31.703
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-06-09 19:48:31.703
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.ui.workbench 4 2 2026-06-09 19:48:32.265
+!MESSAGE Problems occurred when invoking code from plug-in: "org.eclipse.ui.workbench".
+!STACK 0
+java.lang.IllegalArgumentException: Argument not valid
+	at org.eclipse.swt.SWT.error(SWT.java:4931)
+	at org.eclipse.swt.SWT.error(SWT.java:4865)
+	at org.eclipse.swt.SWT.error(SWT.java:4836)
+	at org.eclipse.swt.graphics.ImageData.<init>(ImageData.java:424)
+	at org.eclipse.swt.graphics.ImageData.<init>(ImageData.java:262)
+	at org.eclipse.swt.graphics.Image$ImageGcDrawerWrapper.loadImageData(Image.java:2829)
+	at org.eclipse.swt.graphics.Image$ImageGcDrawerWrapper.loadImageData(Image.java:2817)
+	at org.eclipse.swt.graphics.Image$ImageGcDrawerWrapper.newImageData(Image.java:2812)
+	at org.eclipse.swt.graphics.Image.lambda$14(Image.java:1391)
+	at org.eclipse.swt.graphics.Image$ImageHandleManager.lambda$2(Image.java:190)
+	at java.base/java.util.concurrent.ConcurrentHashMap.compute(ConcurrentHashMap.java:1932)
+	at org.eclipse.swt.graphics.Image$ImageHandleManager.executeOnHandle(Image.java:188)
+	at org.eclipse.swt.graphics.Image.getImageData(Image.java:1383)
+	at org.eclipse.swt.internal.DPIUtil.scaleImage(DPIUtil.java:247)
+	at org.eclipse.swt.internal.DPIUtil.autoScaleImageData(DPIUtil.java:221)
+	at org.eclipse.swt.internal.DPIUtil.scaleImageData(DPIUtil.java:207)
+	at org.eclipse.swt.graphics.Image$ImageFromImageDataProviderWrapper.initializeHandleFromSource(Image.java:2186)
+	at org.eclipse.swt.graphics.Image$ImageFromImageDataProviderWrapper.newImageHandle(Image.java:2181)
+	at org.eclipse.swt.graphics.Image.lambda$6(Image.java:941)
+	at org.eclipse.swt.graphics.Image$ImageHandleManager.lambda$0(Image.java:157)
+	at java.base/java.util.concurrent.ConcurrentHashMap.computeIfAbsent(ConcurrentHashMap.java:1724)
+	at org.eclipse.swt.graphics.Image$ImageHandleManager.getOrCreate(Image.java:157)
+	at org.eclipse.swt.graphics.Image.getHandle(Image.java:941)
+	at org.eclipse.swt.graphics.Image.win32_getHandle(Image.java:933)
+	at org.eclipse.swt.widgets.Control.updateBackgroundImage(Control.java:4786)
+	at org.eclipse.swt.widgets.Composite.updateBackgroundImage(Composite.java:1291)
+	at org.eclipse.swt.widgets.Control.setBackgroundImage(Control.java:3218)
+	at org.eclipse.ui.internal.Workbench$3.run(Workbench.java:830)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.ui.internal.Workbench.createSplashWrapper(Workbench.java:875)
+	at org.eclipse.ui.internal.Workbench.lambda$4(Workbench.java:642)
+	at org.eclipse.swt.internal.DPIUtil.runWithAutoScaleValue(DPIUtil.java:484)
+	at org.eclipse.ui.internal.Workbench$AutoscaleAdaptation.runWithInitialAutoScaleValue(Workbench.java:3681)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:665)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:583)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:173)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:185)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:219)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:149)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:115)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:467)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:298)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:615)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:563)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1415)
+
+!ENTRY org.eclipse.ui 4 0 2026-06-09 19:48:32.280
+!MESSAGE Could not instantiate splash
+!STACK 0
+java.lang.IllegalArgumentException: Argument not valid
+	at org.eclipse.swt.SWT.error(SWT.java:4931)
+	at org.eclipse.swt.SWT.error(SWT.java:4865)
+	at org.eclipse.swt.SWT.error(SWT.java:4836)
+	at org.eclipse.swt.graphics.ImageData.<init>(ImageData.java:424)
+	at org.eclipse.swt.graphics.ImageData.<init>(ImageData.java:262)
+	at org.eclipse.swt.graphics.Image$ImageGcDrawerWrapper.loadImageData(Image.java:2829)
+	at org.eclipse.swt.graphics.Image$ImageGcDrawerWrapper.loadImageData(Image.java:2817)
+	at org.eclipse.swt.graphics.Image$ImageGcDrawerWrapper.newImageData(Image.java:2812)
+	at org.eclipse.swt.graphics.Image.lambda$14(Image.java:1391)
+	at org.eclipse.swt.graphics.Image$ImageHandleManager.lambda$2(Image.java:190)
+	at java.base/java.util.concurrent.ConcurrentHashMap.compute(ConcurrentHashMap.java:1932)
+	at org.eclipse.swt.graphics.Image$ImageHandleManager.executeOnHandle(Image.java:188)
+	at org.eclipse.swt.graphics.Image.getImageData(Image.java:1383)
+	at org.eclipse.swt.internal.DPIUtil.scaleImage(DPIUtil.java:247)
+	at org.eclipse.swt.internal.DPIUtil.autoScaleImageData(DPIUtil.java:221)
+	at org.eclipse.swt.internal.DPIUtil.scaleImageData(DPIUtil.java:207)
+	at org.eclipse.swt.graphics.Image$ImageFromImageDataProviderWrapper.initializeHandleFromSource(Image.java:2186)
+	at org.eclipse.swt.graphics.Image$ImageFromImageDataProviderWrapper.newImageHandle(Image.java:2181)
+	at org.eclipse.swt.graphics.Image.lambda$6(Image.java:941)
+	at org.eclipse.swt.graphics.Image$ImageHandleManager.lambda$0(Image.java:157)
+	at java.base/java.util.concurrent.ConcurrentHashMap.computeIfAbsent(ConcurrentHashMap.java:1724)
+	at org.eclipse.swt.graphics.Image$ImageHandleManager.getOrCreate(Image.java:157)
+	at org.eclipse.swt.graphics.Image.getHandle(Image.java:941)
+	at org.eclipse.swt.graphics.Image.win32_getHandle(Image.java:933)
+	at org.eclipse.swt.widgets.Control.updateBackgroundImage(Control.java:4786)
+	at org.eclipse.swt.widgets.Composite.updateBackgroundImage(Composite.java:1291)
+	at org.eclipse.swt.widgets.Control.setBackgroundImage(Control.java:3218)
+	at org.eclipse.ui.internal.Workbench$3.run(Workbench.java:830)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:47)
+	at org.eclipse.ui.internal.Workbench.createSplashWrapper(Workbench.java:875)
+	at org.eclipse.ui.internal.Workbench.lambda$4(Workbench.java:642)
+	at org.eclipse.swt.internal.DPIUtil.runWithAutoScaleValue(DPIUtil.java:484)
+	at org.eclipse.ui.internal.Workbench$AutoscaleAdaptation.runWithInitialAutoScaleValue(Workbench.java:3681)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:665)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:339)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:583)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:173)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:185)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:219)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:149)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:115)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:467)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:298)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:615)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:563)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1415)
+
+!ENTRY org.eclipse.ui 2 0 2026-06-09 19:48:32.371
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-06-09 19:48:32.371
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.egit.ui 2 0 2026-06-09 19:48:49.830
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\sasid'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.ui.workbench 4 0 2026-06-09 19:48:52.906
+!MESSAGE Failed to obtain 'WinDefend' service state
+!STACK 0
+java.io.IOException: Process timed-out and it was attempted to forcefully terminate it
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runProcess(WindowsDefenderConfigurator.java:395)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runPowershell(WindowsDefenderConfigurator.java:369)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.isWindowsDefenderServiceRunning(WindowsDefenderConfigurator.java:302)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runExclusionCheck(WindowsDefenderConfigurator.java:159)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.lambda$0(WindowsDefenderConfigurator.java:106)
+	at org.eclipse.core.runtime.jobs.Job$2.run(Job.java:187)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+!SESSION 2026-06-09 22:08:26.262 -----------------------------------------------
+eclipse.buildId=4.39.0.202603170703
+java.version=25.0.2
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_IN
+Framework arguments:  -product org.springframework.boot.ide.branding.springtools
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.springframework.boot.ide.branding.springtools
+
+!ENTRY ch.qos.logback.classic 1 0 2026-06-09 22:10:50.322
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY ch.qos.logback.classic 1 0 2026-06-09 22:10:59.407
+!MESSAGE Logback config file: D:\MyProjects\zyrovia-store\backend\.metadata\.plugins\org.eclipse.m2e.logback\logback.2.7.101.20251017-1242.xml
+
+!ENTRY org.eclipse.ui 2 0 2026-06-09 22:11:02.104
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-06-09 22:11:02.108
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.ui 2 0 2026-06-09 22:11:05.317
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-06-09 22:11:05.317
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.egit.ui 2 0 2026-06-09 22:11:47.220
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\sasid'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.ui.workbench 4 0 2026-06-09 22:11:48.946
+!MESSAGE Failed to obtain 'WinDefend' service state
+!STACK 0
+java.io.IOException: Process timed-out and it was attempted to forcefully terminate it
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runProcess(WindowsDefenderConfigurator.java:395)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runPowershell(WindowsDefenderConfigurator.java:369)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.isWindowsDefenderServiceRunning(WindowsDefenderConfigurator.java:302)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runExclusionCheck(WindowsDefenderConfigurator.java:159)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.lambda$0(WindowsDefenderConfigurator.java:106)
+	at org.eclipse.core.runtime.jobs.Job$2.run(Job.java:187)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+
+!ENTRY org.eclipse.mylyn.tasks.ui 2 0 2026-06-09 22:40:08.480
+!MESSAGE No search provider was registered. Tasks search is not available.
+!SESSION 2026-06-20 11:31:38.036 -----------------------------------------------
+eclipse.buildId=4.39.0.202603170703
+java.version=25.0.2
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_IN
+Framework arguments:  -product org.springframework.boot.ide.branding.springtools
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.springframework.boot.ide.branding.springtools -data D:\MyProjects\zyrovia-store\backend
+
+!ENTRY ch.qos.logback.classic 1 0 2026-06-20 11:31:44.044
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY ch.qos.logback.classic 1 0 2026-06-20 11:31:50.067
+!MESSAGE Logback config file: D:\MyProjects\zyrovia-store\backend\.metadata\.plugins\org.eclipse.m2e.logback\logback.2.7.101.20251017-1242.xml
+
+!ENTRY org.eclipse.ui 2 0 2026-06-20 11:31:51.096
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-06-20 11:31:51.096
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.ui 2 0 2026-06-20 11:31:52.063
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-06-20 11:31:52.063
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.egit.ui 2 0 2026-06-20 11:32:04.652
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\sasid'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.ui.workbench 4 0 2026-06-20 11:32:10.212
+!MESSAGE Failed to obtain 'WinDefend' service state
+!STACK 0
+java.io.IOException: Process timed-out and it was attempted to forcefully terminate it
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runProcess(WindowsDefenderConfigurator.java:395)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runPowershell(WindowsDefenderConfigurator.java:369)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.isWindowsDefenderServiceRunning(WindowsDefenderConfigurator.java:302)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runExclusionCheck(WindowsDefenderConfigurator.java:159)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.lambda$0(WindowsDefenderConfigurator.java:106)
+	at org.eclipse.core.runtime.jobs.Job$2.run(Job.java:187)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+!SESSION 2026-06-20 11:33:40.527 -----------------------------------------------
+eclipse.buildId=4.39.0.202603170703
+java.version=25.0.2
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_IN
+Framework arguments:  -product org.springframework.boot.ide.branding.springtools
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.springframework.boot.ide.branding.springtools -data D:\MyProjects\zyrovia-store\backend
+
+!ENTRY ch.qos.logback.classic 1 0 2026-06-20 11:33:44.727
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY ch.qos.logback.classic 1 0 2026-06-20 11:33:47.111
+!MESSAGE Logback config file: D:\MyProjects\zyrovia-store\backend\.metadata\.plugins\org.eclipse.m2e.logback\logback.2.7.101.20251017-1242.xml
+
+!ENTRY org.eclipse.ui 2 0 2026-06-20 11:33:47.895
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-06-20 11:33:47.895
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.ui 2 0 2026-06-20 11:33:48.758
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-06-20 11:33:48.758
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.egit.ui 2 0 2026-06-20 11:33:56.963
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\sasid'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.ui.workbench 4 0 2026-06-20 11:33:58.445
+!MESSAGE Failed to obtain 'WinDefend' service state
+!STACK 0
+java.io.IOException: Process timed-out and it was attempted to forcefully terminate it
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runProcess(WindowsDefenderConfigurator.java:395)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runPowershell(WindowsDefenderConfigurator.java:369)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.isWindowsDefenderServiceRunning(WindowsDefenderConfigurator.java:302)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runExclusionCheck(WindowsDefenderConfigurator.java:159)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.lambda$0(WindowsDefenderConfigurator.java:106)
+	at org.eclipse.core.runtime.jobs.Job$2.run(Job.java:187)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+!SESSION 2026-06-20 11:36:09.047 -----------------------------------------------
+eclipse.buildId=4.39.0.202603170703
+java.version=25.0.2
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_IN
+Framework arguments:  -product org.springframework.boot.ide.branding.springtools
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.springframework.boot.ide.branding.springtools -data D:\MyProjects\zyrovia-store\backend
+
+!ENTRY ch.qos.logback.classic 1 0 2026-06-20 11:36:12.322
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY ch.qos.logback.classic 1 0 2026-06-20 11:36:14.206
+!MESSAGE Logback config file: D:\MyProjects\zyrovia-store\backend\.metadata\.plugins\org.eclipse.m2e.logback\logback.2.7.101.20251017-1242.xml
+
+!ENTRY org.eclipse.ui 2 0 2026-06-20 11:36:14.956
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-06-20 11:36:14.956
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.ui 2 0 2026-06-20 11:36:15.644
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-06-20 11:36:15.644
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.egit.ui 2 0 2026-06-20 11:36:22.347
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\sasid'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.ui.workbench 4 0 2026-06-20 11:36:23.612
+!MESSAGE Failed to obtain 'WinDefend' service state
+!STACK 0
+java.io.IOException: Process timed-out and it was attempted to forcefully terminate it
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runProcess(WindowsDefenderConfigurator.java:395)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runPowershell(WindowsDefenderConfigurator.java:369)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.isWindowsDefenderServiceRunning(WindowsDefenderConfigurator.java:302)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runExclusionCheck(WindowsDefenderConfigurator.java:159)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.lambda$0(WindowsDefenderConfigurator.java:106)
+	at org.eclipse.core.runtime.jobs.Job$2.run(Job.java:187)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+!SESSION 2026-07-04 19:01:00.002 -----------------------------------------------
+eclipse.buildId=4.39.0.202603170703
+java.version=25.0.2
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_IN
+Framework arguments:  -product org.springframework.boot.ide.branding.springtools
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.springframework.boot.ide.branding.springtools -data D:\MyProjects\zyrovia-store\backend
+
+!ENTRY ch.qos.logback.classic 1 0 2026-07-04 19:01:03.130
+!MESSAGE Activated before the state location was initialized. Retry after the state location is initialized.
+
+!ENTRY ch.qos.logback.classic 1 0 2026-07-04 19:01:05.363
+!MESSAGE Logback config file: D:\MyProjects\zyrovia-store\backend\.metadata\.plugins\org.eclipse.m2e.logback\logback.2.7.101.20251017-1242.xml
+
+!ENTRY org.eclipse.ui 2 0 2026-07-04 19:01:06.104
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-07-04 19:01:06.104
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.ui 2 0 2026-07-04 19:01:06.779
+!MESSAGE Warnings while parsing the commands from the 'org.eclipse.ui.commands' and 'org.eclipse.ui.actionDefinitions' extension points.
+!SUBENTRY 1 org.eclipse.ui 2 0 2026-07-04 19:01:06.779
+!MESSAGE Commands should really have a category: plug-in='org.springframework.tooling.boot.ls', id='spring.initializr.addStarters', categoryId='org.eclipse.lsp4e.commandCategory'
+
+!ENTRY org.eclipse.egit.ui 2 0 2026-07-04 19:01:13.830
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\sasid'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.ui.workbench 4 0 2026-07-04 19:01:15.580
+!MESSAGE Failed to obtain 'WinDefend' service state
+!STACK 0
+java.io.IOException: Process timed-out and it was attempted to forcefully terminate it
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runProcess(WindowsDefenderConfigurator.java:395)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runPowershell(WindowsDefenderConfigurator.java:369)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.isWindowsDefenderServiceRunning(WindowsDefenderConfigurator.java:302)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.runExclusionCheck(WindowsDefenderConfigurator.java:159)
+	at org.eclipse.ui.internal.WindowsDefenderConfigurator.lambda$0(WindowsDefenderConfigurator.java:106)
+	at org.eclipse.core.runtime.jobs.Job$2.run(Job.java:187)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
