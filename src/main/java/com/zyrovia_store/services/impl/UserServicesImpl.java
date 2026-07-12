@@ -2,6 +2,7 @@ package com.zyrovia_store.services.impl;
 
 import java.util.List;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,10 @@ public class UserServicesImpl implements IUserServices {
 
 	// Repository for User database operations
 	private final UserRepository userRepository;
+
+	// Password encoder used to securely hash user passwords before storing them in
+	// the database
+	private final BCryptPasswordEncoder passwordEncoder;
 
 	// Convert User Entity to UserResponseDto
 	private UserResponseDto mapToResponseDto(User user) {
@@ -42,7 +47,7 @@ public class UserServicesImpl implements IUserServices {
 
 		// Create User entity from request DTO
 		User user = User.builder().name(requestDto.getName()).email(requestDto.getEmail())
-				.password(requestDto.getPassword()).role(requestDto.getRole()).build();
+				.password(passwordEncoder.encode(requestDto.getPassword())).role(requestDto.getRole()).build();
 
 		User savedUser = this.userRepository.save(user);
 
@@ -75,26 +80,42 @@ public class UserServicesImpl implements IUserServices {
 		User user = this.userRepository.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-		user.setName(requestDto.getName());
+		// Update name only if it is provided in the request
+		if (requestDto.getName() != null) {
 
-		// Validate email uniqueness during update
-		if (!user.getEmail().equals(requestDto.getEmail())
-				&& this.userRepository.existsByEmail(requestDto.getEmail())) {
-
-			throw new IllegalArgumentException("Email already exists");
+			user.setName(requestDto.getName());
 		}
 
-		user.setEmail(requestDto.getEmail());
+		// Update email only if it is provided
+		if (requestDto.getEmail() != null) {
+
+			// Check whether another user is already using this email
+			if (!user.getEmail().equals(requestDto.getEmail())
+					&& this.userRepository.existsByEmail(requestDto.getEmail())) {
+
+				throw new IllegalArgumentException("Email already exists");
+			}
+
+			user.setEmail(requestDto.getEmail());
+		}
 
 		// Update password only if provided
-		if (requestDto.getPassword() != null && requestDto.getEmail().isBlank()) {
-			user.setPassword(requestDto.getPassword());
+		if (requestDto.getPassword() != null && !requestDto.getPassword().isBlank()) {
+
+			// Encode password before saving into the database
+			user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
 		}
 
-		user.setRole(requestDto.getRole());
+		// Update role only if it is provided
+		if (requestDto.getRole() != null) {
 
+			user.setRole(requestDto.getRole());
+		}
+
+		// Save updated user
 		User updatedUser = this.userRepository.save(user);
 
+		// Convert entity to response DTO
 		return this.mapToResponseDto(updatedUser);
 	}
 
