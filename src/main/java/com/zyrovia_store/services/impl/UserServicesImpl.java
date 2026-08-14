@@ -6,9 +6,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zyrovia_store.dtos.UserRequestDto;
+import com.zyrovia_store.dtos.UserRegistrationRequestDto;
 import com.zyrovia_store.dtos.UserResponseDto;
+import com.zyrovia_store.dtos.UserUpdateRequestDto;
 import com.zyrovia_store.entities.User;
+import com.zyrovia_store.enums.Role;
 import com.zyrovia_store.exceptions.ResourceNotFoundException;
 import com.zyrovia_store.repositories.UserRepository;
 import com.zyrovia_store.services.IUserServices;
@@ -31,23 +33,31 @@ public class UserServicesImpl implements IUserServices {
 	private UserResponseDto mapToResponseDto(User user) {
 
 		// Create response DTO from User entity
-		return UserResponseDto.builder().userId(user.getId()).name(user.getName()).email(user.getEmail())
-				.role(user.getRole()).build();
+		return UserResponseDto.builder()
+									.userId(user.getId())
+									.name(user.getName())
+									.email(user.getEmail())
+									.role(user.getRole())
+									.build();
 	}
 
 	// Register a new user
 	@Override
-	public UserResponseDto registerUser(UserRequestDto requestDto) {
+	public UserResponseDto registerUser(UserRegistrationRequestDto userRegistrationRequestDto) {
 
 		// Validate email uniqueness
-		if (this.userRepository.existsByEmail(requestDto.getEmail())) {
+		if (this.userRepository.existsByEmail(userRegistrationRequestDto.getEmail())) {
 
 			throw new IllegalArgumentException("Email already exists");
 		}
 
 		// Create User entity from request DTO
-		User user = User.builder().name(requestDto.getName()).email(requestDto.getEmail())
-				.password(passwordEncoder.encode(requestDto.getPassword())).role(requestDto.getRole()).build();
+		User user = User.builder()
+				.name(userRegistrationRequestDto.getName())
+				.email(userRegistrationRequestDto.getEmail())
+				.password(passwordEncoder.encode(userRegistrationRequestDto.getPassword()))
+				.role(Role.USER)
+				.build();
 
 		User savedUser = this.userRepository.save(user);
 
@@ -74,42 +84,42 @@ public class UserServicesImpl implements IUserServices {
 
 	// Update existing user details
 	@Override
-	public UserResponseDto updateUser(Long userId, UserRequestDto requestDto) {
+	public UserResponseDto updateUser(Long userId, UserUpdateRequestDto userUpdateRequestDto) {
 
 		// Validate user existence
 		User user = this.userRepository.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
 		// Update name only if it is provided in the request
-		if (requestDto.getName() != null) {
+		if (userUpdateRequestDto.getName() != null) {
 
-			user.setName(requestDto.getName());
+			user.setName(userUpdateRequestDto.getName());
 		}
 
 		// Update email only if it is provided
-		if (requestDto.getEmail() != null) {
+		if (userUpdateRequestDto.getEmail() != null) {
 
 			// Check whether another user is already using this email
-			if (!user.getEmail().equals(requestDto.getEmail())
-					&& this.userRepository.existsByEmail(requestDto.getEmail())) {
+			if (!user.getEmail().equals(userUpdateRequestDto.getEmail())
+					&& this.userRepository.existsByEmail(userUpdateRequestDto.getEmail())) {
 
 				throw new IllegalArgumentException("Email already exists");
 			}
 
-			user.setEmail(requestDto.getEmail());
+			user.setEmail(userUpdateRequestDto.getEmail());
 		}
 
 		// Update password only if provided
-		if (requestDto.getPassword() != null && !requestDto.getPassword().isBlank()) {
+		if (userUpdateRequestDto.getPassword() != null && !userUpdateRequestDto.getPassword().isBlank()) {
 
 			// Encode password before saving into the database
-			user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+			user.setPassword(passwordEncoder.encode(userUpdateRequestDto.getPassword()));
 		}
 
 		// Update role only if it is provided
-		if (requestDto.getRole() != null) {
+		if (userUpdateRequestDto.getRole() != null) {
 
-			user.setRole(requestDto.getRole());
+			user.setRole(userUpdateRequestDto.getRole());
 		}
 
 		// Save updated user
@@ -129,5 +139,4 @@ public class UserServicesImpl implements IUserServices {
 
 		this.userRepository.delete(user);
 	}
-
 }

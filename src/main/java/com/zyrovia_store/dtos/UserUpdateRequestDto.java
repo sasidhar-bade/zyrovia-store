@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserRequestDto {
+public class UserUpdateRequestDto {
 
 	private String name;
 
@@ -22,5 +22,4 @@ public class UserRequestDto {
 	private String password;
 
 	private Role role;
-
 }

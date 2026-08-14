@@ -43,7 +43,7 @@ public class AuthServicesImpl implements IAuthServices {
 		}
 
 		// Generate JWT token after successful authentication
-		String token = this.jwtUtils.generateToken(requestDto.getEmail());
+		String token = this.jwtUtils.generateToken(user.getEmail());
 
 		// Return JWT token to the client
 		return LoginResponseDto.builder()

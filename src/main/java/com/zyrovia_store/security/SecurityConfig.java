@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -22,6 +21,9 @@ public class SecurityConfig {
 
 	// Custom JWT Authentication Filter
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	
+	// Handles 401 Unauthorized and 403 Forbidden responses
+	private final SecurityExceptionHandler securityExceptionHandler;
 
 	// Configure Spring Security Filter Chain
 	@Bean
@@ -30,7 +32,7 @@ public class SecurityConfig {
 		http
 		
 			// Disable CSRF for REST APIs
-			.csrf(csrf -> csrf.disable())
+			.csrf(csrfCustomzier -> csrfCustomzier.disable())
 			
 			// StateLess session because JWT is used
 			.sessionManagement(session -> session
@@ -52,6 +54,11 @@ public class SecurityConfig {
 					.anyRequest()
 					.authenticated())
 			
+			// Handle 401 and 403 errors
+			.exceptionHandling(exception -> exception
+					.authenticationEntryPoint(securityExceptionHandler)
+					.accessDeniedHandler(securityExceptionHandler))
+			
 			// HTTP Basic disabled
 			.httpBasic(httpBasic -> httpBasic.disable());
 
@@ -63,7 +70,7 @@ public class SecurityConfig {
 
 	// Password Encoder Bean
 	@Bean
-	PasswordEncoder passwordEncoder() {
+	BCryptPasswordEncoder passwordEncoder() {
 
 		return new BCryptPasswordEncoder();
 	}

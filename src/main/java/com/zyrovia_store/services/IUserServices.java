@@ -2,18 +2,19 @@ package com.zyrovia_store.services;
 
 import java.util.List;
 
-import com.zyrovia_store.dtos.UserRequestDto;
+import com.zyrovia_store.dtos.UserRegistrationRequestDto;
 import com.zyrovia_store.dtos.UserResponseDto;
+import com.zyrovia_store.dtos.UserUpdateRequestDto;
 
 public interface IUserServices {
 
-	UserResponseDto registerUser(UserRequestDto requestDto);
+	UserResponseDto registerUser(UserRegistrationRequestDto requestDto);
 
 	UserResponseDto getUserById(Long userId);
 
 	List<UserResponseDto> getAllUsers();
 
-	UserResponseDto updateUser(Long userId, UserRequestDto requestDto);
+	UserResponseDto updateUser(Long userId, UserUpdateRequestDto requestDto);
 
 	void deleteUser(Long userId);
 }

@@ -42,33 +42,43 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		// Extract JWT token
 		String token = authHeader.substring(7);
 
-		// Extract email from JWT
-		String email = this.jwtUtils.extractEmail(token);
+		try {
+			
+			// Extract email from JWT Token
+			String email = this.jwtUtils.extractEmail(token);
 
-		// Authenticate only if user is not already authenticated
-		if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+			// Authenticate only if user is not already authenticated
+			if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-			// Create an Authentication object with authenticated user details
-			UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
+				// Create an Authentication object with authenticated user details
+				UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
 
-			// Validate JWT
-			if (this.jwtUtils.validateToken(token, userDetails.getUsername())) {
+				// Validate JWT
+				if (this.jwtUtils.validateToken(token, userDetails.getUsername())) {
 
-				UsernamePasswordAuthenticationToken authentication = 
-						new UsernamePasswordAuthenticationToken(
-						userDetails,                     // Authenticated user
-						null, 							// No credentials required after authentication
-						userDetails.getAuthorities());  // User roles/authorities
-				
-			    // Attach additional request information (IP address, session ID, etc.)
-				authentication.setDetails(
-						new WebAuthenticationDetailsSource()
-						.buildDetails(request));
-				
-			    // Store authentication object in SecurityContext
-			    // so Spring Security treats the user as authenticated
-				SecurityContextHolder.getContext().setAuthentication(authentication);
+					UsernamePasswordAuthenticationToken authentication = 
+							new UsernamePasswordAuthenticationToken(
+									userDetails,                     // Authenticated user
+									null, 					        // No credentials required after authentication
+									userDetails.getAuthorities());  // User roles/authorities
+									
+																
+				    // Attach additional request information (IP address, session ID, etc.)
+					authentication.setDetails(
+							new WebAuthenticationDetailsSource()
+							.buildDetails(request));
+					
+				    // Store authentication object in SecurityContext
+				    // so Spring Security treats the user as authenticated
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+				}
 			}
+			
+		} catch (Exception e) {
+			// Invalid, expired, or malformed JWT
+			//Continue without authenticating the user
+			SecurityContextHolder.clearContext();
+			
 		}
 
 		// Continue request

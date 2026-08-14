@@ -52,20 +52,32 @@ public class CartServicesImpl implements ICartServices {
 		for (CartItem cartItem : cart.getCartItems()) {
 
 			// Calculate total price for each cart item
-			BigDecimal totalPrice = cartItem.getProduct().getPrice()
+			BigDecimal totalPrice = cartItem
+					.getProduct()
+					.getPrice()
 					.multiply(BigDecimal.valueOf(cartItem.getQuantity()));
 
 			grandTotal = grandTotal.add(totalPrice);
 
 			items.add(
-					CartItemResponseDto.builder().cartItemId(cartItem.getId()).productId(cartItem.getProduct().getId())
-							.productName(cartItem.getProduct().getName()).price(cartItem.getProduct().getPrice())
-							.quantity(cartItem.getQuantity()).totalPrice(totalPrice).build());
+					  CartItemResponseDto.builder()
+					 							.cartItemId(cartItem.getId())
+					 							.productId(cartItem.getProduct().getId())
+					 							.productName(cartItem.getProduct().getName())
+					 							.price(cartItem.getProduct().getPrice())
+					 							.quantity(cartItem.getQuantity())
+					 							.totalPrice(totalPrice)
+					 							.build()
+					 );
 		}
 
 		// Build final cart response
-		return CartResponseDto.builder().cartId(cart.getId()).userId(cart.getUser().getId()).items(items)
-				.grandTotal(grandTotal).build();
+		return CartResponseDto.builder()
+									.cartId(cart.getId())
+									.userId(cart.getUser().getId())
+									.items(items)
+									.grandTotal(grandTotal)
+									.build();
 	}
 
 	// Get currently logged-in user
@@ -104,8 +116,10 @@ public class CartServicesImpl implements ICartServices {
 		});
 
 		// Check whether product already exists in cart
-		Optional<CartItem> existingItem = cart.getCartItems().stream()
-				.filter(item -> item.getProduct().getId().equals(product.getId())).findFirst();
+		Optional<CartItem> existingItem = cart.getCartItems()
+													.stream()
+													.filter(item -> item.getProduct().getId().equals(product.getId()))
+													.findFirst();
 
 		if (existingItem.isPresent()) {
 
