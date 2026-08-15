@@ -27,7 +27,8 @@ public class JwtUtils {
 	// Generate Secret Key from application.properties
 	private SecretKey getSignInKey() {
 
-		return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+		return Keys.hmacShaKeyFor(
+				jwtSecret.getBytes(StandardCharsets.UTF_8));
 	}
 
 	// Generate JWT Token for authenticated user
@@ -45,11 +46,11 @@ public class JwtUtils {
 				.compact();
 	}
 
-	// Extract email from token
+	// Extract email from JWT Token
 	public String extractEmail(String token) {
 
-		return extractClaims(token)
-				.getSubject();
+			return extractClaims(token)
+					.getSubject();
 	}
 
 	// Extract all claims from token
@@ -64,17 +65,13 @@ public class JwtUtils {
 
 	// Validate token against user's email and expiration
 	public boolean validateToken(String token, String email) {
+		
+		Claims claims = this.extractClaims(token);
 
-		String extractedEmail = this.extractEmail(token);
+		String extractedEmail = claims.getSubject();
+		
+		Date expiration= claims.getExpiration();
 
-		return extractedEmail.equals(email) && !isTokenExpired(token);
-	}
-
-	// Check whether token is expired
-	private boolean isTokenExpired(String token) {
-
-		return this.extractClaims(token)
-				.getExpiration()
-				.before(new Date());
+		return extractedEmail.equals(email) && expiration.after(new Date());
 	}
 }

@@ -9,6 +9,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +49,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			String email = this.jwtUtils.extractEmail(token);
 
 			// Authenticate only if user is not already authenticated
-			if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+			if (email != null && 
+					SecurityContextHolder.getContext()
+					.getAuthentication() == null) {
 
 				// Create an Authentication object with authenticated user details
 				UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
@@ -74,14 +77,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				}
 			}
 			
-		} catch (Exception e) {
+			// Continue request
+			filterChain.doFilter(request, response);
+			
+		} catch (JwtException | IllegalArgumentException e) {
+			
 			// Invalid, expired, or malformed JWT
 			//Continue without authenticating the user
+            // Clear authentication when JWT is invalid
 			SecurityContextHolder.clearContext();
 			
+			// Return 401 response
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			
+			response.setContentType("application/json");
+			response.getWriter().write("""
+					{
+						"status": 401,
+						"error": "Unauthorized",
+						"message": "Invalid or expired token"
+					}
+					""");
+			return;
 		}
-
-		// Continue request
-		filterChain.doFilter(request, response);
 	}
 }

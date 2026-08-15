@@ -20,8 +20,16 @@ public class SecurityExceptionHandler implements AuthenticationEntryPoint, Acces
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 			AccessDeniedException accessDeniedException) throws IOException, ServletException {
 		
-		response.sendError(HttpServletResponse.SC_FORBIDDEN, 
-				"Forbidden: You do not have permission to access this resource");
+		response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+		response.setContentType("application/json");
+		
+		response.getWriter().write("""
+				{
+					"status": 403,
+					"error": "Forbidden",
+					"message": "Access Denied"
+				}
+				""");
 	}
 
 	// Handles unauthenticated users
@@ -29,7 +37,15 @@ public class SecurityExceptionHandler implements AuthenticationEntryPoint, Acces
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException {
 		
-		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, 
-				"Unauthorized: Authentication is required");
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		response.setContentType("application/json");
+		
+		response.getWriter().write("""
+				{
+					"status": 401,
+					"error": "Unauthorized",
+					"message": "Authentication is required"
+				}
+				""");
 	}
 }

@@ -110,16 +110,11 @@ public class UserServicesImpl implements IUserServices {
 		}
 
 		// Update password only if provided
-		if (userUpdateRequestDto.getPassword() != null && !userUpdateRequestDto.getPassword().isBlank()) {
+		if (userUpdateRequestDto.getPassword() != null 
+				&& !userUpdateRequestDto.getPassword().isBlank()) {
 
 			// Encode password before saving into the database
 			user.setPassword(passwordEncoder.encode(userUpdateRequestDto.getPassword()));
-		}
-
-		// Update role only if it is provided
-		if (userUpdateRequestDto.getRole() != null) {
-
-			user.setRole(userUpdateRequestDto.getRole());
 		}
 
 		// Save updated user
