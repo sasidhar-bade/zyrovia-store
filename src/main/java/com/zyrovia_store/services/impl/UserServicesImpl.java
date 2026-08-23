@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.zyrovia_store.dtos.UserRegistrationRequestDto;
 import com.zyrovia_store.dtos.UserResponseDto;
+import com.zyrovia_store.dtos.UserRoleUpdateRequestDto;
 import com.zyrovia_store.dtos.UserUpdateRequestDto;
 import com.zyrovia_store.entities.User;
 import com.zyrovia_store.enums.Role;
@@ -133,5 +134,20 @@ public class UserServicesImpl implements IUserServices {
 				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
 		this.userRepository.delete(user);
+	}
+
+	// ADMIN can modify Role
+	@Override
+	public UserResponseDto updateUserRole(Long userId, UserRoleUpdateRequestDto roleUpdateRequestDto) {
+		
+		// Validate user existence
+		User user = this.userRepository.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + userId));
+		
+		user.setRole(roleUpdateRequestDto.getRole());
+		
+		User roleUpdatedUser = this.userRepository.save(user);
+				
+		return this.mapToResponseDto(roleUpdatedUser);
 	}
 }

@@ -50,8 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 			// Authenticate only if user is not already authenticated
 			if (email != null && 
-					SecurityContextHolder.getContext()
-					.getAuthentication() == null) {
+					SecurityContextHolder.getContext().getAuthentication() == null) {
 
 				// Create an Authentication object with authenticated user details
 				UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zyrovia_store.dtos.UserRegistrationRequestDto;
 import com.zyrovia_store.dtos.UserResponseDto;
+import com.zyrovia_store.dtos.UserRoleUpdateRequestDto;
 import com.zyrovia_store.dtos.UserUpdateRequestDto;
 import com.zyrovia_store.services.IUserServices;
 
@@ -32,7 +33,8 @@ public class UserController {
 	
 	// Register a new user
 	@PostMapping
-	public ResponseEntity<UserResponseDto> registerUserApiHandler(@RequestBody UserRegistrationRequestDto registrationRequestDto) {
+	public ResponseEntity<UserResponseDto> registerUserApiHandler(
+			@RequestBody UserRegistrationRequestDto registrationRequestDto) {
 
 		UserResponseDto responseDto = this.userServices.registerUser(registrationRequestDto);
 
@@ -60,10 +62,15 @@ public class UserController {
     // USER can update only their own profile
 	@PreAuthorize("hasRole('ADMIN') or @userSecurity.isOwner(#userId, authentication.name)")
 	@PatchMapping("/{userId}")
-	public ResponseEntity<UserResponseDto> updateUserApiHandler(@PathVariable Long userId,
+	public ResponseEntity<UserResponseDto> updateUserApiHandler(
+			@PathVariable Long userId,
 			@Valid @RequestBody UserUpdateRequestDto updateRequestDto) {
 
-		return ResponseEntity.ok(this.userServices.updateUser(userId, updateRequestDto));
+		return ResponseEntity.ok(
+				this.userServices.updateUser(
+						userId, 
+						updateRequestDto)
+				);
 	}
 
 	// Only ADMIN can delete users
@@ -74,5 +81,19 @@ public class UserController {
 		this.userServices.deleteUser(userId);
 
 		return ResponseEntity.noContent().build();
+	}
+	
+	// Only ADMIN can Update Roles
+	@PreAuthorize("hasRole('ADMIN')")
+	@PatchMapping("{userId}/role")
+	public ResponseEntity<UserResponseDto> updateUserRoleApiHandler(
+			@PathVariable Long userId, 
+			@Valid @RequestBody UserRoleUpdateRequestDto roleUpdateRequestDto){
+		
+		return ResponseEntity.ok(
+				this.userServices.updateUserRole(
+						userId, 
+						roleUpdateRequestDto)
+				);
 	}
 }

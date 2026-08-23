@@ -2,6 +2,8 @@ package com.zyrovia_store.dtos;
 
 import java.math.BigDecimal;
 
+import com.zyrovia_store.enums.OrderStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,4 +26,6 @@ public class OrderItemResponseDto {
 	private BigDecimal price;
 
 	private BigDecimal totalPrice;
+	
+	private OrderStatus orderStatus;
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.zyrovia_store.dtos.UserRegistrationRequestDto;
 import com.zyrovia_store.dtos.UserResponseDto;
+import com.zyrovia_store.dtos.UserRoleUpdateRequestDto;
 import com.zyrovia_store.dtos.UserUpdateRequestDto;
 
 public interface IUserServices {
@@ -17,4 +18,6 @@ public interface IUserServices {
 	UserResponseDto updateUser(Long userId, UserUpdateRequestDto requestDto);
 
 	void deleteUser(Long userId);
+	
+	UserResponseDto updateUserRole(Long userId, UserRoleUpdateRequestDto roleUpdateRequestDto);
 }

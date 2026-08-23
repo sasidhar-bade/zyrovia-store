@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -19,6 +20,7 @@ import com.zyrovia_store.dtos.ProductRequestDto;
 import com.zyrovia_store.dtos.ProductResponseDto;
 import com.zyrovia_store.services.IProductServices;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -32,9 +34,11 @@ public class ProductController {
 	@PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
 	@PostMapping
 	public ResponseEntity<ProductResponseDto> createProductApiHandler(
-			@RequestBody ProductRequestDto productRequestDto) {
+			@Valid @RequestBody ProductRequestDto productRequestDto, 
+			Authentication authentication) {
 
-		ProductResponseDto productResponseDto = this.productServices.createProduct(productRequestDto);
+		ProductResponseDto productResponseDto = 
+				this.productServices.createProduct(productRequestDto, authentication);
 
 		return new ResponseEntity<>(productResponseDto, HttpStatus.CREATED);
 	}
@@ -63,11 +67,14 @@ public class ProductController {
 	// ADMIN can update any product
     // SELLER can update only own product
 	@PreAuthorize(
-			"hasRole('ADMIN') or " + 
-			"@productSecurity.isOwner(#productId, authentication.name)")
+			"hasRole('ADMIN') or " +
+			"(hasRole('SELLER') and " +
+			"@productSecurity.isOwner(#productId, authentication.name))"
+	)
 	@PatchMapping("/{productId}")
-	public ResponseEntity<ProductResponseDto> updateProductApiHandler(@PathVariable Long productId,
-			@RequestBody ProductRequestDto productRequestDto) {
+	public ResponseEntity<ProductResponseDto> updateProductApiHandler(
+			@PathVariable Long productId,
+			@Valid @RequestBody ProductRequestDto productRequestDto) {
 
 		return ResponseEntity.ok(this.productServices.updateProduct(productId, productRequestDto));
 	}
@@ -76,7 +83,9 @@ public class ProductController {
     // SELLER can delete only own product
 	@PreAuthorize(
 			"hasRole('ADMIN') or " + 
-			"@productSecurity.isOwner(#productId, authentication.name)")
+			"(hasRole('SELLER') and " +
+			"@productSecurity.isOwner(#productId, authentication.name))"
+	)
 	@DeleteMapping("/{productId}")
 	public ResponseEntity<Void> deleteProductApiHandler(@PathVariable Long productId) {
 

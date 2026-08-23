@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,14 +13,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Data
 public class UserUpdateRequestDto {
 
+	@Size(
+			min = 2, 
+			message = "Name must contain at least 2 characters"
+			)
 	private String name;
 
-	@Email
+	@Email(message = "Invaild email format")
 	private String email;
 
-	@Size(min = 8)
+	@Size(
+			min = 8, 
+			message = "Password must contain at least 8 characters"
+			)
 	private String password;
 }
