@@ -226,53 +226,54 @@ public class OrderServicesImpl implements IOrderServices {
 			OrderStatus status,
 			Authentication authentication) {
 		
-	    // 1. Check whether logged-in user is ADMIN
+		// 1.Validate status
+		if(status == null) {
+			
+			throw new IllegalArgumentException("Order status cannot be null");
+		}
+		
+	    // 2. Check whether logged-in user is ADMIN
 		boolean isAdmin = authentication.getAuthorities()
 				.stream()
 				.anyMatch(
 						authority -> authority.getAuthority().equals("ROLE_ADMIN")
 						);
 		
-		// 2. Find order
+		// 3. Find order
 		Order order = this.orderRepository.findById(orderId)
 				.orElseThrow(()-> new ResourceNotFoundException("Order not found with id : " + orderId));
 		
-		// 3. Find Order Item
+		// 4. Find Order Item
 		OrderItem orderItem = this.orderItemRepository.findById(orderItemId)
 				.orElseThrow(()-> new ResourceNotFoundException("Order item not found with id : " + orderItemId));
 		
-		 // 4. Verify order item belongs to this order
+		 // 5. Verify order item belongs to this order
 		if(!orderItem.getOrder().getId().equals(order.getId())) {
 			
 			throw new IllegalArgumentException("Order item does not belong to this order");
 		}
 		
-		// 5. ADMIN can update any order item
+		// 6. ADMIN can update any order item
 		if(!isAdmin) {
 			
-			// 6. Get logged-in user's email from JWT
+			// 7. Get logged-in user's email from JWT
 			String email = authentication.getName();
 					
-			// 7. Find logged-in seller
+			// 8. Find logged-in seller
 			User seller = this.userRepository.findByEmail(email)
 							.orElseThrow(() -> new ResourceNotFoundException("Seller not found with email : " + email));
 			
-			// 8. Get product from order item
+			// 9. Get product from order item
 			Product product = orderItem.getProduct();
 			
-			// 9. Verify product belongs to logged-in seller
-			if(!product.getSeller().getId().equals(seller.getId())) {
+			// 10. Verify product belongs to logged-in seller
+			if(product.getSeller() == null 
+					|| !product.getSeller().getId().equals(seller.getId())) {
 				
 				throw new AccessDeniedException("You are not authorized to update this order item");
 			}
 		}
-		
-		// 10.Validate status
-		if(status == null) {
-			
-			throw new IllegalArgumentException("Order status cannot be null");
-		}
-		
+				
 		// 11. Update order status
 		orderItem.setStatus(status);
 		
