@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,6 +20,7 @@ import com.zyrovia_store.dtos.ProductRequestDto;
 import com.zyrovia_store.dtos.ProductResponseDto;
 import com.zyrovia_store.services.IProductServices;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -27,72 +30,67 @@ public class ProductController {
 
 	private final IProductServices productServices;
 
-	// Insert product into product table in database API Call
+    // ADMIN and SELLER can create products
+	@PreAuthorize("hasAnyRole('ADMIN', 'SELLER')")
 	@PostMapping
 	public ResponseEntity<ProductResponseDto> createProductApiHandler(
-			@RequestBody ProductRequestDto productRequestDto) {
+			@Valid @RequestBody ProductRequestDto productRequestDto, 
+			Authentication authentication) {
 
-		ProductResponseDto productResponseDto = this.productServices.createProduct(productRequestDto);
+		ProductResponseDto productResponseDto = 
+				this.productServices.createProduct(productRequestDto, authentication);
 
 		return new ResponseEntity<>(productResponseDto, HttpStatus.CREATED);
 	}
 
-	// getting product by id API Call
-	@GetMapping("/{id}")
-	public ResponseEntity<ProductResponseDto> getProductByIdApiHandler(@PathVariable Long id) {
+    // ADMIN, SELLER and USER can view products
+	@GetMapping("/{productId}")
+	public ResponseEntity<ProductResponseDto> getProductByIdApiHandler(@PathVariable Long productId) {
 
-//		ProductResponseDto product = this.productServices.getProductById(id);
-//
-//		return new ResponseEntity<>(product, HttpStatus.OK);
-
-		return ResponseEntity.ok(this.productServices.getProductById(id));
+		return ResponseEntity.ok(this.productServices.getProductById(productId));
 	}
 
-	// getting all products API Call
+    // Any authenticated user can view products
 	@GetMapping
 	public ResponseEntity<List<ProductResponseDto>> getAllProductsApiHandler() {
-
-//		List<ProductResponseDto> products = this.productServices.getAllProducts();
-//
-//		return new ResponseEntity<>(products, HttpStatus.OK);
 
 		return ResponseEntity.ok(this.productServices.getAllProducts());
 	}
 
-	// Searching products API Call
+    // Any authenticated user can search products
 	@GetMapping("/search")
 	public ResponseEntity<List<ProductResponseDto>> searchProductsApiHandler(@RequestParam String keyword) {
-
-//		List<ProductResponseDto> products = this.productServices.searchProducts(keyword);
-//
-//		return new ResponseEntity<>(products, HttpStatus.OK);
 
 		return ResponseEntity.ok(this.productServices.searchProducts(keyword));
 	}
 
-	// Update product in product table in database API Call
-	@PatchMapping("/{id}")
-	public ResponseEntity<ProductResponseDto> updateProductApiHandler(@PathVariable Long id,
-			@RequestBody ProductRequestDto productRequestDto) {
+	// ADMIN can update any product
+    // SELLER can update only own product
+	@PreAuthorize(
+			"hasRole('ADMIN') or " +
+			"(hasRole('SELLER') and " +
+			"@productSecurity.isOwner(#productId, authentication.name))"
+	)
+	@PatchMapping("/{productId}")
+	public ResponseEntity<ProductResponseDto> updateProductApiHandler(
+			@PathVariable Long productId,
+			@Valid @RequestBody ProductRequestDto productRequestDto) {
 
-//		ProductResponseDto productResponseDto = this.productServices.updateProduct(id, productRequestDto);
-//
-//		return new ResponseEntity<>(productResponseDto, HttpStatus.CREATED);
-
-		return ResponseEntity.ok(this.productServices.updateProduct(id, productRequestDto));
+		return ResponseEntity.ok(this.productServices.updateProduct(productId, productRequestDto));
 	}
 
-	// Delete product in product table in database API Call
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteProductApiHandler(@PathVariable Long id) {
+	// ADMIN can delete any product
+    // SELLER can delete only own product
+	@PreAuthorize(
+			"hasRole('ADMIN') or " + 
+			"(hasRole('SELLER') and " +
+			"@productSecurity.isOwner(#productId, authentication.name))"
+	)
+	@DeleteMapping("/{productId}")
+	public ResponseEntity<Void> deleteProductApiHandler(@PathVariable Long productId) {
 
-//		this.productServices.deleteProduct(id);
-//
-//		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-		this.productServices.deleteProduct(id);
+		this.productServices.deleteProduct(productId);
 
 		return ResponseEntity.noContent().build();
 	}
-
 }

@@ -2,6 +2,7 @@ package com.zyrovia_store.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,7 +26,8 @@ public class CartController {
 
 	private final ICartServices cartServices;
 
-	// Add product to cart
+	// USER can add product to own cart
+	@PreAuthorize("hasRole('USER')")
 	@PostMapping
 	public ResponseEntity<CartResponseDto> addToCartApiHandler(@RequestBody CartRequestDto requestDto) {
 
@@ -34,14 +36,16 @@ public class CartController {
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 	}
 
-	// Get current user's cart
+    // USER can access only their own cart
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping
 	public ResponseEntity<CartResponseDto> getCartApiHandler() {
 
 		return ResponseEntity.ok(this.cartServices.getCart());
 	}
 
-	// Update cart item quantity
+    // USER can update only their own cart
+	@PreAuthorize("hasRole('USER')")
 	@PatchMapping("/{cartItemId}")
 	public ResponseEntity<CartResponseDto> updateQuantityApiHandler(@PathVariable Long cartItemId,
 			@RequestParam Integer quantity) {
@@ -49,7 +53,8 @@ public class CartController {
 		return ResponseEntity.ok(this.cartServices.updateQuantity(cartItemId, quantity));
 	}
 
-	// Remove item from cart
+    // USER can remove item from own cart
+	@PreAuthorize("hasRole('USER')")
 	@DeleteMapping("/{cartItemId}")
 	public ResponseEntity<Void> removeFromCartApiHandler(@PathVariable Long cartItemId) {
 
@@ -58,7 +63,8 @@ public class CartController {
 		return ResponseEntity.noContent().build();
 	}
 
-	// Clear current user's cart
+    // USER can clear own cart
+	@PreAuthorize("hasRole('USER')")
 	@DeleteMapping("/clear")
 	public ResponseEntity<Void> clearCartApiHandler() {
 

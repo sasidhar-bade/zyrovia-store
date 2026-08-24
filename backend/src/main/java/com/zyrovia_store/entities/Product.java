@@ -52,11 +52,14 @@ public class Product {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "seller_id", nullable = false)
+	private User seller;
 
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
 	private List<OrderItem> orderItems;
 
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
 	private List<CartItem> cartItems;
-
 }

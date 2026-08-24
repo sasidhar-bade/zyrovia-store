@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,69 +55,100 @@ public class CartServicesImpl implements ICartServices {
 		for (CartItem cartItem : cart.getCartItems()) {
 
 			// Calculate total price for each cart item
-			BigDecimal totalPrice = cartItem.getProduct().getPrice()
+			BigDecimal totalPrice = cartItem
+					.getProduct()
+					.getPrice()
 					.multiply(BigDecimal.valueOf(cartItem.getQuantity()));
 
 			grandTotal = grandTotal.add(totalPrice);
 
-			items.add(
-					CartItemResponseDto.builder().cartItemId(cartItem.getId()).productId(cartItem.getProduct().getId())
-							.productName(cartItem.getProduct().getName()).price(cartItem.getProduct().getPrice())
-							.quantity(cartItem.getQuantity()).totalPrice(totalPrice).build());
+			items.add(CartItemResponseDto.builder()
+					.cartItemId(cartItem.getId())
+					.productId(cartItem.getProduct().getId())
+					.productName(cartItem.getProduct().getName())
+					.price(cartItem.getProduct().getPrice())
+					.quantity(cartItem.getQuantity())
+					.totalPrice(totalPrice)
+					.build());
 		}
 
 		// Build final cart response
-		return CartResponseDto.builder().cartId(cart.getId()).userId(cart.getUser().getId()).items(items)
-				.grandTotal(grandTotal).build();
+		return CartResponseDto.builder()
+									.cartId(cart.getId())
+									.userId(cart.getUser().getId())
+									.items(items)
+									.grandTotal(grandTotal)
+									.build();
 	}
 
 	// Get currently logged-in user
-	// Temporary implementation using hardcoded user id
-	// Later replace with JWT Authentication
 	private User getCurrentUser() {
-
-		Long userId = 1l; // Temporary
-
-		User user = this.userRepository.findById(userId)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-		return user;
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		String email = authentication.getName();
+		
+		return this.userRepository.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("User not found with email : " + email));
 	}
 
 	// Add product to current user's cart
 	@Override
 	public CartResponseDto addToCart(CartRequestDto cartRequestDto) {
 
+		// 1. Get currently logged-in user
 		User user = this.getCurrentUser();
+		
+		//2. Validate quantity
+		if(cartRequestDto.getQuantity() == null 
+				&& cartRequestDto.getQuantity() <=0) {
+			
+			throw new IllegalArgumentException("Quantity must be greater than zero");
+		}
 
-		// Validate product existence
+		// 3. Validate product existence
 		Product product = this.productRepository.findById(cartRequestDto.getProductId())
 				.orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+		
+		// 4. Validate product stock
+		if(product.getStock() <= 0) {
+			
+			throw new IllegalArgumentException("Product is out of stock");
+		}
 
-		// Find existing cart or create new cart
-		Cart cart = this.cartRepository.findByUserId(user.getId()).orElseGet(() -> {
+		// 5. Validate requested quantity against stock
+		if(cartRequestDto.getQuantity() > product.getStock()) {
+			
+			throw new IllegalArgumentException("Insufficient stock available");
+		}
+		
+		// 6. Find existing cart or create new cart
+		Cart cart = this.cartRepository.findByUserId(user.getId())
+				.orElseGet(() -> {
 
-			Cart newcart = new Cart();
+						Cart newcart = new Cart();
+			
+						newcart.setUser(user);
+						newcart.setCartItems(new ArrayList<>());
+			
+						return this.cartRepository.save(newcart);
+				});
 
-			newcart.setUser(user);
-
-			newcart.setCartItems(new ArrayList<>());
-
-			return this.cartRepository.save(newcart);
-		});
-
-		// Check whether product already exists in cart
-		Optional<CartItem> existingItem = cart.getCartItems().stream()
-				.filter(item -> item.getProduct().getId().equals(product.getId())).findFirst();
+		// 7. Check whether product already exists in cart
+		Optional<CartItem> existingItem = cart.getCartItems()
+													.stream()
+													.filter(item -> item.getProduct()
+																	    .getId().equals(product.getId()))
+													.findFirst();
 
 		if (existingItem.isPresent()) {
 
-			// Increase quantity if item already exists
+			// 8. Increase quantity if item already exists
 			CartItem item = existingItem.get();
 
 			Integer updatedQuantity = item.getQuantity() + cartRequestDto.getQuantity();
 
-			// Validate stock availability
+			// 9. Validate stock availability
 			if (updatedQuantity > product.getStock()) {
 
 				throw new IllegalArgumentException("Insufficient stock available");
@@ -124,31 +158,20 @@ public class CartServicesImpl implements ICartServices {
 
 		} else {
 
-			// Create new cart item
+			// 10. Create new cart item
 			CartItem item = new CartItem();
 
 			item.setCart(cart);
 			item.setProduct(product);
-
-			// Validate quantity
-			if (cartRequestDto.getQuantity() <= 0) {
-
-				throw new IllegalArgumentException("Quantity must be greater than zero");
-			}
-
-			// Validate stock
-			if (product.getStock() < cartRequestDto.getQuantity()) {
-
-				throw new IllegalArgumentException("Insufficient stock available");
-			}
-
 			item.setQuantity(cartRequestDto.getQuantity());
 
 			cart.getCartItems().add(item);
 		}
 
+		// 11. save cart
 		Cart savedCart = this.cartRepository.save(cart);
 
+		// 12. Return updated cart
 		return mapToResponseDto(savedCart);
 	}
 
@@ -178,7 +201,7 @@ public class CartServicesImpl implements ICartServices {
 		// Ensure item belongs to current user
 		if (!cartItem.getCart().getUser().getId().equals(user.getId())) {
 
-			throw new IllegalStateException("Unauthorized access"); // later Custom Exception
+			throw new AccessDeniedException("You are not authorized to access this cart item");
 		}
 
 		// Validate quantity
@@ -213,7 +236,7 @@ public class CartServicesImpl implements ICartServices {
 		// Ensure item belongs to current user
 		if (!cartItem.getCart().getUser().getId().equals(user.getId())) {
 
-			throw new IllegalStateException("Unauthorized access"); // later Custom Exception
+			throw new AccessDeniedException("You are not authorized to access this cart item");
 		}
 
 		this.cartItemRepository.delete(cartItem);

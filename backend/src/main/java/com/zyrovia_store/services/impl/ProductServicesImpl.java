@@ -3,6 +3,7 @@ package com.zyrovia_store.services.impl;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,9 +11,11 @@ import com.zyrovia_store.dtos.ProductRequestDto;
 import com.zyrovia_store.dtos.ProductResponseDto;
 import com.zyrovia_store.entities.Category;
 import com.zyrovia_store.entities.Product;
+import com.zyrovia_store.entities.User;
 import com.zyrovia_store.exceptions.ResourceNotFoundException;
 import com.zyrovia_store.repositories.CategoryRepository;
 import com.zyrovia_store.repositories.ProductRepository;
+import com.zyrovia_store.repositories.UserRepository;
 import com.zyrovia_store.services.IProductServices;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,9 @@ public class ProductServicesImpl implements IProductServices {
 
 	// Repository for Category database operations
 	private final CategoryRepository categoryRepository;
+	
+	// Repository for User database operations
+	private final UserRepository userRepository;
 
 	// Used for Entity <-> DTO conversion
 	private final ModelMapper mapper;
@@ -47,16 +53,24 @@ public class ProductServicesImpl implements IProductServices {
 
 	// Create a new product
 	@Override
-	public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
+	public ProductResponseDto createProduct(
+			ProductRequestDto productRequestDto, 
+			Authentication authentication) {
 
-		// Validate Category existence
-		Category category = this.categoryRepository.findById(productRequestDto.getCategoryId())
+		// 1. Validate Category existence
+		Category category = this.categoryRepository
+				.findById(productRequestDto.getCategoryId())
 				.orElseThrow(() -> new ResourceNotFoundException(
 						"Category not found with id : " + productRequestDto.getCategoryId()));
+		
+		// 2. Get logged-in user's email from Bearer token
+		String email = authentication.getName();
+		
+	    // 3. Find logged-in user from database
+		User seller = this.userRepository.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("User not found with email : "+ email));
 
-//		// Convert DTO to Entity
-//		Product product = mapper.map(productRequestDto, Product.class);
-
+		// 4. Create Product
 		Product product = new Product();
 
 		product.setName(productRequestDto.getName());
@@ -65,9 +79,14 @@ public class ProductServicesImpl implements IProductServices {
 		product.setStock(productRequestDto.getStock());
 		product.setImageUrl(productRequestDto.getImageUrl());
 
+		// 5. set relationships
 		// Set category relationship
 		product.setCategory(category);
+		
+	    // Set logged-in user as seller
+		product.setSeller(seller);
 
+		// 6. save
 		Product savedProduct = this.productRepository.save(product);
 
 		return mapToResponseDto(savedProduct);
@@ -87,14 +106,19 @@ public class ProductServicesImpl implements IProductServices {
 	@Override
 	public List<ProductResponseDto> getAllProducts() {
 
-		return this.productRepository.findAll().stream().map(this::mapToResponseDto).toList();
+		return this.productRepository.findAll()
+				.stream()
+				.map(this::mapToResponseDto)
+				.toList();
 	}
 
 	// Search products by name
 	@Override
 	public List<ProductResponseDto> searchProducts(String keyword) {
 
-		return this.productRepository.findByNameContainingIgnoreCase(keyword).stream().map(this::mapToResponseDto)
+		return this.productRepository.findByNameContainingIgnoreCase(keyword)
+				.stream()
+				.map(this::mapToResponseDto)
 				.toList();
 	}
 
@@ -133,5 +157,4 @@ public class ProductServicesImpl implements IProductServices {
 
 		this.productRepository.delete(product);
 	}
-
 }
