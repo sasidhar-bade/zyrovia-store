@@ -20,6 +20,7 @@ import com.zyrovia_store.entities.OrderItem;
 import com.zyrovia_store.entities.Product;
 import com.zyrovia_store.entities.User;
 import com.zyrovia_store.enums.OrderStatus;
+import com.zyrovia_store.exceptions.BadRequestException;
 import com.zyrovia_store.exceptions.ResourceNotFoundException;
 import com.zyrovia_store.repositories.CartRepository;
 import com.zyrovia_store.repositories.OrderItemRepository;
@@ -58,7 +59,10 @@ public class OrderServicesImpl implements IOrderServices {
 		String email = authentication.getName();
 		
 		return this.userRepository.findByEmail(email)
-				.orElseThrow(()-> new ResourceNotFoundException("User not found with email : " + email));
+				.orElseThrow(
+							()-> new ResourceNotFoundException(
+									"User not found with email : " + email)
+						);
 	}
 
 	// Convert Order Entity into OrderResponseDto
@@ -98,12 +102,14 @@ public class OrderServicesImpl implements IOrderServices {
 
 		// Fetch user's cart
 		Cart cart = this.cartRepository.findByUserId(user.getId())
-				.orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+				.orElseThrow(
+							() -> new ResourceNotFoundException("Cart not found")
+						);
 
 		// Validate cart is not empty
 		if (cart.getCartItems().isEmpty()) {
 
-			throw new IllegalArgumentException("Cart is empty");
+			throw new BadRequestException("Cart is empty");
 		}
 
 		List<OrderItem> orderItems = new ArrayList<>();
@@ -123,7 +129,10 @@ public class OrderServicesImpl implements IOrderServices {
 			// Validate stock availability
 			if (product.getStock() < cartItem.getQuantity()) {
 
-				throw new IllegalArgumentException(product.getName() + " is out of stock");
+				throw new BadRequestException(
+							product.getName() 
+							+ " is out of stock"
+						);
 			}
 
 			// Reduce product stock after successful validation
@@ -180,12 +189,19 @@ public class OrderServicesImpl implements IOrderServices {
 		User user = this.getCurrentUser();
 
 		Order order = this.orderRepository.findById(orderId)
-				.orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+				.orElseThrow(
+							() -> new ResourceNotFoundException("Order not found")
+						);
 
 		// Ensure order belongs to current user
-		if (!order.getUser().getId().equals(user.getId())) {
+		if (!order.getUser()
+				  .getId()
+				  .equals(user.getId())
+				  ) {
 
-			throw new AccessDeniedException("You are not authorized to access this order");
+			throw new AccessDeniedException(
+						"You are not authorized to access this order"
+					);
 		}
 
 		return this.mapToResponseDto(order);
@@ -208,7 +224,10 @@ public class OrderServicesImpl implements IOrderServices {
 		
 		// 2. Find logged-in seller
 		User seller = this.userRepository.findByEmail(email)
-				.orElseThrow(() -> new ResourceNotFoundException("Seller not found with email : " + email));
+				.orElseThrow(
+							() -> new ResourceNotFoundException(
+									"Seller not found with email : " + email)
+						);
 		
 	    // 3. Find orders containing seller's products
 		List<Order> orders = this.orderRepository.findOrdersBySellerId(seller.getId());
@@ -229,7 +248,7 @@ public class OrderServicesImpl implements IOrderServices {
 		// 1.Validate status
 		if(status == null) {
 			
-			throw new IllegalArgumentException("Order status cannot be null");
+			throw new BadRequestException("Order status cannot be null");
 		}
 		
 	    // 2. Check whether logged-in user is ADMIN
@@ -241,16 +260,27 @@ public class OrderServicesImpl implements IOrderServices {
 		
 		// 3. Find order
 		Order order = this.orderRepository.findById(orderId)
-				.orElseThrow(()-> new ResourceNotFoundException("Order not found with id : " + orderId));
+				.orElseThrow(
+							()-> new ResourceNotFoundException(
+									"Order not found with id : " + orderId)
+						);
 		
 		// 4. Find Order Item
 		OrderItem orderItem = this.orderItemRepository.findById(orderItemId)
-				.orElseThrow(()-> new ResourceNotFoundException("Order item not found with id : " + orderItemId));
+				.orElseThrow(
+							()-> new ResourceNotFoundException(
+									"Order item not found with id : " + orderItemId)
+						);
 		
 		 // 5. Verify order item belongs to this order
-		if(!orderItem.getOrder().getId().equals(order.getId())) {
+		if(!orderItem.getOrder()
+					 .getId()
+					 .equals(order.getId())
+					 ) {
 			
-			throw new IllegalArgumentException("Order item does not belong to this order");
+			throw new BadRequestException(
+						"Order item does not belong to this order"
+					);
 		}
 		
 		// 6. ADMIN can update any order item
@@ -261,26 +291,138 @@ public class OrderServicesImpl implements IOrderServices {
 					
 			// 8. Find logged-in seller
 			User seller = this.userRepository.findByEmail(email)
-							.orElseThrow(() -> new ResourceNotFoundException("Seller not found with email : " + email));
+							.orElseThrow(
+										() -> new ResourceNotFoundException(
+												"Seller not found with email : " + email)
+									);
 			
 			// 9. Get product from order item
 			Product product = orderItem.getProduct();
 			
 			// 10. Verify product belongs to logged-in seller
 			if(product.getSeller() == null 
-					|| !product.getSeller().getId().equals(seller.getId())) {
+					|| !product.getSeller()
+							   .getId()
+							   .equals(seller.getId())
+							   ) {
 				
-				throw new AccessDeniedException("You are not authorized to update this order item");
+				throw new AccessDeniedException(
+						"You are not authorized to update this order item");
 			}
 		}
-				
-		// 11. Update order status
+		
+		// 11. Validate status transition
+		this.validateStatusTransition(orderItem.getStatus(), status);
+		
+		// 12. Update order status
 		orderItem.setStatus(status);
 		
-		// 12. Save
+		// 13. Save
 		this.orderItemRepository.save(orderItem);
 		
-		// 13. Return and Convert Entity -> DTO
+		// 14. Return and Convert Entity -> DTO
 		return this.mapToResponseDto(order);
+	}
+	
+	// Validate whether the requested status transition is allowed
+	private void validateStatusTransition(
+			OrderStatus currentStatus,
+			OrderStatus newStatus) {
+		
+		// Current status should always exist
+		if(currentStatus == null) {
+			throw new BadRequestException(
+						"Current order status cannot be null"
+					);
+		}
+		
+		// New status should always exist
+		if(newStatus == null) {
+			throw new BadRequestException(
+						"New order status cannot be null"
+					);
+		}
+		
+		// Delivered is a final status
+		if(currentStatus == OrderStatus.DELIVERED) {
+			throw new BadRequestException(
+						"Delivered order item cannot be updated"
+					);
+		}
+		
+		// Cancelled is a final status
+		if(currentStatus == OrderStatus.CANCELLED) {
+			throw new BadRequestException(
+						"Cancelled order item cannot be updated"
+					);
+		}
+		
+		// Validate allowed status transitions
+		switch (currentStatus) { 
+		
+		// PENDING can move to CONFIRMED or CANCELLED
+		case PENDING: {
+			
+			if(newStatus != OrderStatus.CONFIRMED 
+					&& newStatus != OrderStatus.CANCELLED) {
+				
+				throw new BadRequestException(
+						"Invalid status transition from "
+						+ currentStatus
+						+ " to "
+						+ newStatus);
+			}
+			break;
+		}
+		
+		// CONFIRMED can move to PROCESSING or CANCELLED
+		case CONFIRMED: {
+			
+			if(newStatus != OrderStatus.PROCESSING 
+					&& newStatus != OrderStatus.CANCELLED) {
+				
+				throw new BadRequestException(
+						"Invalid status transition from "
+						+ currentStatus
+						+ " to "
+						+ newStatus);
+			}
+			break;
+		}
+		
+		// PROCESSING can move only to SHIPPED
+        case PROCESSING: {
+        	
+        		if(newStatus != OrderStatus.SHIPPED) {
+				
+				throw new BadRequestException(
+						"Invalid status transition from "
+						+ currentStatus
+						+ " to "
+						+ newStatus);
+			}
+			break;
+		}
+        
+     // SHIPPED can move only to DELIVERED
+		case SHIPPED: {
+			
+			if(newStatus != OrderStatus.DELIVERED) {
+				
+				throw new BadRequestException(
+						"Invalid status transition from "
+						+ currentStatus
+						+ " to "
+						+ newStatus);
+			}
+			break;
+		}
+
+		// Reject any undefined status transition
+		default:
+			throw new BadRequestException(
+						"Invalid order status transition"
+					);
+		}
 	}
 }

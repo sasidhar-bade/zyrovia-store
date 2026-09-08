@@ -57,6 +57,19 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
 	}
 	
+	// Handle business rule violations and invalid client requests
+	// Returns HTTP 400 Bad Request with a standard error response
+	@ExceptionHandler(BadRequestException.class)
+	public ResponseEntity<ErrorResponseDto> handleBadRequestException(BadRequestException e) {
+			
+		ErrorResponseDto errorResponseDto = this.mapToResponseError(
+				HttpStatus.BAD_REQUEST.value(),
+				"Bad Request",
+				e.getMessage());
+			
+		return ResponseEntity.badRequest().body(errorResponseDto);
+	}
+	
 	// Handle authenticated users who do not have sufficient permissions
 	// Returns HTTP 403 Forbidden	
 	@ExceptionHandler(AccessDeniedException.class)
