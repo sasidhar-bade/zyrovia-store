@@ -9,8 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.zyrovia_store.dtos.ErrorResponseDto;
 
@@ -37,11 +39,15 @@ public class GlobalExceptionHandler {
 
 		ErrorResponseDto errorResponseDto = 
 				this.mapToResponseError(
-						HttpStatus.INTERNAL_SERVER_ERROR.value(),
-						"Internal Server error",
-						ex.getMessage());
+							HttpStatus.INTERNAL_SERVER_ERROR.value(),
+							"Internal Server error",
+							ex.getMessage()
+						);
 
-		return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(
+					errorResponseDto, 
+					HttpStatus.INTERNAL_SERVER_ERROR
+				);
 	}
 
 	// Handle requested resources that do not exist
@@ -50,9 +56,10 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponseDto> handleResourceNotFoundException(ResourceNotFoundException ex) {
 
 		ErrorResponseDto errorResponseDto = this.mapToResponseError(
-				HttpStatus.NOT_FOUND.value(), 
-				"Not Found", 
-				ex.getMessage());
+					HttpStatus.NOT_FOUND.value(), 
+					"Not Found", 
+					ex.getMessage()
+				);
 
 		return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
 	}
@@ -63,9 +70,10 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponseDto> handleBadRequestException(BadRequestException e) {
 			
 		ErrorResponseDto errorResponseDto = this.mapToResponseError(
-				HttpStatus.BAD_REQUEST.value(),
-				"Bad Request",
-				e.getMessage());
+					HttpStatus.BAD_REQUEST.value(),
+					"Bad Request",
+					e.getMessage()
+				);
 			
 		return ResponseEntity.badRequest().body(errorResponseDto);
 	}
@@ -77,11 +85,15 @@ public class GlobalExceptionHandler {
 			AccessDeniedException ex) {
 		
 		ErrorResponseDto errorResponseDto = this.mapToResponseError(
-				HttpStatus.FORBIDDEN.value(),
-				"Forbidden",
-				ex.getMessage());
+					HttpStatus.FORBIDDEN.value(),
+					"Forbidden",
+					ex.getMessage()
+				);
 		
-		return new ResponseEntity<>(errorResponseDto, HttpStatus.FORBIDDEN);
+		return new ResponseEntity<>(
+					errorResponseDto, 
+					HttpStatus.FORBIDDEN
+				);
 	}
 	
 	// Handle malformed or invalid JSON request bodies
@@ -100,11 +112,13 @@ public class GlobalExceptionHandler {
 	    }
 		
 		ErrorResponseDto errorResponseDto = this.mapToResponseError(
-				HttpStatus.BAD_REQUEST.value(),
-				"Bad Request",
-				message);
+					HttpStatus.BAD_REQUEST.value(),
+					"Bad Request",
+					message
+				);
 		
-		return new ResponseEntity<>(errorResponseDto,HttpStatus.BAD_REQUEST);
+		return ResponseEntity.badRequest()
+							 .body(errorResponseDto);
 	}
 	
 	// Handle Bean Validation errors from @Valid request DTOs
@@ -121,7 +135,41 @@ public class GlobalExceptionHandler {
 					error.getField(),
 					error.getDefaultMessage()));
 		
-		return ResponseEntity.badRequest().body(errors);
+		return ResponseEntity.badRequest()
+							 .body(errors);
+	}
+	
+	// Handle invalid request parameter type or enum conversion errors
+	// Returns HTTP 400 Bad Request
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ResponseEntity<ErrorResponseDto> handleMethodArgumentTypeMismatchException(
+			MethodArgumentTypeMismatchException ex) {
+		
+		ErrorResponseDto errorResponseDto = this.mapToResponseError(
+					HttpStatus.BAD_REQUEST.value(), 
+					"Bad Request", 
+					ex.getMessage()
+				);
+		
+		return ResponseEntity.badRequest()
+							 .body(errorResponseDto);
+	}
+	
+	// Handle missing required request parameters
+	// Returns HTTP 400 Bad Request
+	@ExceptionHandler(MissingServletRequestParameterException.class)
+	public ResponseEntity<ErrorResponseDto> handleMissingServletRequestParameterException(
+			MissingServletRequestParameterException ex) {
+		
+		ErrorResponseDto errorResponseDto = this.mapToResponseError(
+					HttpStatus.BAD_REQUEST.value(), 
+					"Bad Request",  
+					ex.getMessage()
+				);
+		
+		return ResponseEntity.badRequest()
+							 .body(errorResponseDto);
+		
 	}
 	
 	// Handle business validation errors such as
@@ -134,6 +182,7 @@ public class GlobalExceptionHandler {
 
 		errorResponse.put("error", e.getMessage());
 		
-		return ResponseEntity.badRequest().body(errorResponse);
+		return ResponseEntity.badRequest()
+							 .body(errorResponse);
 	}
 }

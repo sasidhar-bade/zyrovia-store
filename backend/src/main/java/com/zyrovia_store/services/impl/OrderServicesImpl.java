@@ -74,6 +74,7 @@ public class OrderServicesImpl implements IOrderServices {
 		for (OrderItem item : order.getOrderItems()) {
 
 			items.add(OrderItemResponseDto.builder()
+					.orderItemId(item.getId())
 					.productId(item.getProduct().getId())
 					.productName(item.getProduct().getName())
 					.quantity(item.getQuantity())
