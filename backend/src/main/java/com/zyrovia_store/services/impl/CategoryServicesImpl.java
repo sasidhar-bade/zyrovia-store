@@ -48,7 +48,10 @@ public class CategoryServicesImpl implements ICategoryServices {
 	public CategoryResponseDto getCategoryById(Long id) {
 
 		Category category = this.categoryRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Category not found with id :" + id));
+												   .orElseThrow(
+														   () -> new ResourceNotFoundException(
+																   	"Category not found with id :" + id)
+													);
 
 		return mapToResponseDto(category);
 	}
@@ -57,17 +60,25 @@ public class CategoryServicesImpl implements ICategoryServices {
 	@Override
 	public List<CategoryResponseDto> getAllCategories() {
 
-		return this.categoryRepository.findAll().stream().map(this::mapToResponseDto).toList();
+		return this.categoryRepository.findAll()
+									  .stream()
+									  .map(this::mapToResponseDto)
+									  .toList();
 
 	}
 
 	// update an existing Category
 	@Override
-	public CategoryResponseDto updateCategory(Long id, CategoryRequestDto categoryRequestDto) {
+	public CategoryResponseDto updateCategory(
+			Long id, 
+			CategoryRequestDto categoryRequestDto) {
 
 		// find existing Category
 		Category category = this.categoryRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Category not found with id :" + id));
+												   .orElseThrow(
+														   () -> new ResourceNotFoundException(
+																   		"Category not found with id :" + id)
+												   );
 
 		// update Category fields
 		category.setCategoryName(categoryRequestDto.getCategoryName());
@@ -82,9 +93,11 @@ public class CategoryServicesImpl implements ICategoryServices {
 	public void deleteCategory(Long id) {
 
 		Category category = this.categoryRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Category not found with id :" + id));
+												   .orElseThrow(
+														   () -> new ResourceNotFoundException(
+																   	"Category not found with id :" + id)
+													);
 
 		this.categoryRepository.delete(category);
 	}
-
 }

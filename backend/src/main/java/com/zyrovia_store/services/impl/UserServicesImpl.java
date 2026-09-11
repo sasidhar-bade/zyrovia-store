@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zyrovia_store.dtos.UserRequestDto;
 import com.zyrovia_store.dtos.UserResponseDto;
 import com.zyrovia_store.entities.User;
+import com.zyrovia_store.exceptions.BadRequestException;
 import com.zyrovia_store.exceptions.ResourceNotFoundException;
 import com.zyrovia_store.repositories.UserRepository;
 import com.zyrovia_store.services.IUserServices;
@@ -26,8 +27,12 @@ public class UserServicesImpl implements IUserServices {
 	private UserResponseDto mapToResponseDto(User user) {
 
 		// Create response DTO from User entity
-		return UserResponseDto.builder().userId(user.getId()).name(user.getName()).email(user.getEmail())
-				.role(user.getRole()).build();
+		return UserResponseDto.builder()
+							  .userId(user.getId())
+							  .name(user.getName())
+							  .email(user.getEmail())
+							  .role(user.getRole())
+							  .build();
 	}
 
 	// Register a new user
@@ -37,12 +42,25 @@ public class UserServicesImpl implements IUserServices {
 		// Validate email uniqueness
 		if (this.userRepository.existsByEmail(requestDto.getEmail())) {
 
-			throw new IllegalArgumentException("Email already exists");
+			throw new BadRequestException(
+					"Email already exists");
 		}
 
 		// Create User entity from request DTO
-		User user = User.builder().name(requestDto.getName()).email(requestDto.getEmail())
-				.password(requestDto.getPassword()).role(requestDto.getRole()).build();
+		User user = User.builder()
+						.name(
+							requestDto.getName()
+						 )
+						.email(
+							requestDto.getEmail()
+						 )
+						.password(
+							requestDto.getPassword()
+						 )
+						.role(
+							requestDto.getRole()
+						 )
+						.build();
 
 		User savedUser = this.userRepository.save(user);
 
@@ -55,7 +73,10 @@ public class UserServicesImpl implements IUserServices {
 
 		// Validate user existence
 		User user = this.userRepository.findById(userId)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
+									   .orElseThrow(
+											   () -> new ResourceNotFoundException(
+													   "User not found")
+										);
 
 		return this.mapToResponseDto(user);
 	}
@@ -64,31 +85,48 @@ public class UserServicesImpl implements IUserServices {
 	@Override
 	public List<UserResponseDto> getAllUsers() {
 
-		return this.userRepository.findAll().stream().map(this::mapToResponseDto).toList();
+		return this.userRepository.findAll()
+								  .stream()
+								  .map(this::mapToResponseDto)
+								  .toList();
 	}
 
 	// Update existing user details
 	@Override
-	public UserResponseDto updateUser(Long userId, UserRequestDto requestDto) {
+	public UserResponseDto updateUser(
+			Long userId, 
+			UserRequestDto requestDto) {
 
 		// Validate user existence
 		User user = this.userRepository.findById(userId)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
+									   .orElseThrow(
+											   () -> new ResourceNotFoundException(
+													   "User not found")
+										);
 
 		user.setName(requestDto.getName());
 
 		// Validate email uniqueness during update
-		if (!user.getEmail().equals(requestDto.getEmail())
-				&& this.userRepository.existsByEmail(requestDto.getEmail())) {
+		if (!user.getEmail()
+				 .equals(requestDto.getEmail())
+				 && this.userRepository.existsByEmail(
+						 requestDto.getEmail())
+				 ) {
 
-			throw new IllegalArgumentException("Email already exists");
+			throw new BadRequestException(
+						"Email already exists");
 		}
 
 		user.setEmail(requestDto.getEmail());
 
 		// Update password only if provided
-		if (requestDto.getPassword() != null && requestDto.getEmail().isBlank()) {
-			user.setPassword(requestDto.getPassword());
+		if (requestDto.getPassword() != null 
+				&& requestDto.getEmail()
+							 .isBlank()) {
+			
+			user.setPassword(
+					requestDto.getPassword()
+			);
 		}
 
 		user.setRole(requestDto.getRole());
@@ -104,7 +142,10 @@ public class UserServicesImpl implements IUserServices {
 
 		// Validate user existence
 		User user = this.userRepository.findById(userId)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
+									   .orElseThrow(
+											   () -> new ResourceNotFoundException(
+													   "User not found")
+										);
 
 		this.userRepository.delete(user);
 	}

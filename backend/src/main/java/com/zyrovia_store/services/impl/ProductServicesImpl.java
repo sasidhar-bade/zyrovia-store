@@ -38,9 +38,15 @@ public class ProductServicesImpl implements IProductServices {
 
 		// Manually set category details because they belong
 		// to a related entity (Category)
-		productResponseDto.setCategoryId(product.getCategory().getId());
+		productResponseDto.setCategoryId(
+				product.getCategory()
+				       .getId()
+		);
 
-		productResponseDto.setCategoryName(product.getCategory().getCategoryName());
+		productResponseDto.setCategoryName(
+				product.getCategory()
+					   .getCategoryName()
+		);
 
 		return productResponseDto;
 	}
@@ -51,19 +57,28 @@ public class ProductServicesImpl implements IProductServices {
 
 		// Validate Category existence
 		Category category = this.categoryRepository.findById(productRequestDto.getCategoryId())
-				.orElseThrow(() -> new ResourceNotFoundException(
-						"Category not found with id : " + productRequestDto.getCategoryId()));
-
-//		// Convert DTO to Entity
-//		Product product = mapper.map(productRequestDto, Product.class);
+												   .orElseThrow(() -> new ResourceNotFoundException(
+														   "Category not found with id : " 
+														   + productRequestDto.getCategoryId())
+													);
 
 		Product product = new Product();
 
-		product.setName(productRequestDto.getName());
-		product.setDescription(productRequestDto.getDescription());
-		product.setPrice(productRequestDto.getPrice());
-		product.setStock(productRequestDto.getStock());
-		product.setImageUrl(productRequestDto.getImageUrl());
+		product.setName(
+				productRequestDto.getName()
+		);
+		product.setDescription(
+				productRequestDto.getDescription()
+		);
+		product.setPrice(
+				productRequestDto.getPrice()
+		);
+		product.setStock(
+				productRequestDto.getStock()
+		);
+		product.setImageUrl(
+				productRequestDto.getImageUrl()
+		);
 
 		// Set category relationship
 		product.setCategory(category);
@@ -78,7 +93,10 @@ public class ProductServicesImpl implements IProductServices {
 	public ProductResponseDto getProductById(Long productId) {
 
 		Product product = this.productRepository.findById(productId)
-				.orElseThrow(() -> new ResourceNotFoundException("Product not found with id : " + productId));
+												.orElseThrow(
+														() -> new ResourceNotFoundException(
+																"Product not found with id : " + productId)
+												);
 
 		return mapToResponseDto(product);
 	}
@@ -87,36 +105,59 @@ public class ProductServicesImpl implements IProductServices {
 	@Override
 	public List<ProductResponseDto> getAllProducts() {
 
-		return this.productRepository.findAll().stream().map(this::mapToResponseDto).toList();
+		return this.productRepository.findAll()
+									.stream()
+									.map(this::mapToResponseDto)
+									.toList();
 	}
 
 	// Search products by name
 	@Override
 	public List<ProductResponseDto> searchProducts(String keyword) {
 
-		return this.productRepository.findByNameContainingIgnoreCase(keyword).stream().map(this::mapToResponseDto)
-				.toList();
+		return this.productRepository.findByNameContainingIgnoreCase(keyword)
+									.stream()
+									.map(this::mapToResponseDto)
+									.toList();
 	}
 
 	// Update an existing product
 	@Override
-	public ProductResponseDto updateProduct(Long productId, ProductRequestDto productRequestDto) {
+	public ProductResponseDto updateProduct(
+			Long productId, 
+			ProductRequestDto productRequestDto) {
 
 		// Find existing product
 		Product product = this.productRepository.findById(productId)
-				.orElseThrow(() -> new ResourceNotFoundException("Product not found with id : " + productId));
+												.orElseThrow(
+														() -> new ResourceNotFoundException(
+																"Product not found with id : " + productId)
+												);
 
 		// Validate category
 		Category category = this.categoryRepository.findById(productRequestDto.getCategoryId())
-				.orElseThrow(() -> new ResourceNotFoundException(
-						"Category not found with id : " + productRequestDto.getCategoryId()));
+												   .orElseThrow(
+														   () -> new ResourceNotFoundException(
+																   "Category not found with id : " 
+																   + productRequestDto.getCategoryId())
+													);
 
 		// Update product fields
-		product.setName(productRequestDto.getName());
-		product.setDescription(productRequestDto.getDescription());
-		product.setPrice(productRequestDto.getPrice());
-		product.setStock(productRequestDto.getStock());
-		product.setImageUrl(productRequestDto.getImageUrl());
+		product.setName(
+				productRequestDto.getName()
+		);
+		product.setDescription(
+				productRequestDto.getDescription()
+		);
+		product.setPrice(
+				productRequestDto.getPrice()
+		);
+		product.setStock(
+				productRequestDto.getStock()
+		);
+		product.setImageUrl(
+				productRequestDto.getImageUrl()
+		);
 		product.setCategory(category);
 
 		Product updatedProduct = this.productRepository.save(product);
@@ -129,9 +170,11 @@ public class ProductServicesImpl implements IProductServices {
 	public void deleteProduct(Long productId) {
 
 		Product product = this.productRepository.findById(productId)
-				.orElseThrow(() -> new ResourceNotFoundException("Product not found with id : " + productId));
+												.orElseThrow(
+														() -> new ResourceNotFoundException(
+																"Product not found with id : " + productId)
+												);
 
 		this.productRepository.delete(product);
 	}
-
 }

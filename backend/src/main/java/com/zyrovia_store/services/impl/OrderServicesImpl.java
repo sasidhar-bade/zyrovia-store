@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,16 +62,50 @@ public class OrderServicesImpl implements IOrderServices {
 		// Convert each OrderItem into OrderItemResponseDto
 		for (OrderItem item : order.getOrderItems()) {
 
-			items.add(OrderItemResponseDto.builder().productId(item.getProduct().getId())
-					.productName(item.getProduct().getName()).quantity(item.getQuantity())
-					.totalPrice(item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()))).price(item.getPrice())
-					.build());
+			items.add(OrderItemResponseDto.builder()
+										  .productId(
+												  item.getProduct().getId()
+										   )
+										  .productName(
+												  item.getProduct().getName()
+										   )
+										  .quantity(
+												  item.getQuantity()
+										   )
+										  .totalPrice(
+												  item.getPrice()
+												  	  .multiply(
+												  			  BigDecimal.valueOf(
+												  					  item.getQuantity()
+												  			  )
+												  		)
+										  )
+										  .price(
+												  item.getPrice()
+										  )
+										  .build());
 		}
 
 		// Build final order response
-		return OrderResponseDto.builder().orderId(order.getId()).userId(order.getUser().getId())
-				.orderDate(order.getOrderDate()).status(order.getStatus()).totalAmount(order.getTotalAmount())
-				.items(items).build();
+		return OrderResponseDto.builder()
+							   .orderId(
+									   order.getId()
+								)
+							   .userId(
+									   order.getUser()
+									   		.getId()
+							    )
+							   .orderDate(
+									   order.getOrderDate()
+							    )
+							   .status(
+									   order.getStatus()
+								)
+							   .totalAmount(
+									   order.getTotalAmount()
+								)
+							   .items(items)
+							   .build();
 	}
 
 	// Convert current user's cart into an order
@@ -81,7 +116,10 @@ public class OrderServicesImpl implements IOrderServices {
 
 		// Fetch user's cart
 		Cart cart = this.cartRepository.findByUserId(user.getId())
-				.orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+										.orElseThrow(
+												() -> new ResourceNotFoundException(
+															"Cart not found")
+										);
 
 		// Validate cart is not empty
 		if (cart.getCartItems().isEmpty()) {
@@ -124,7 +162,14 @@ public class OrderServicesImpl implements IOrderServices {
 			orderItems.add(orderItem);
 
 			// Calculate order total amount
-			totalAmount = totalAmount.add(product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+			totalAmount = totalAmount.add(
+										product.getPrice()
+												.multiply(
+														BigDecimal.valueOf(
+																cartItem.getQuantity()
+														)
+												)
+										);
 		}
 
 		order.setOrderItems(orderItems);
@@ -147,7 +192,10 @@ public class OrderServicesImpl implements IOrderServices {
 
 		User user = this.getCurrentUser();
 
-		return this.orderRepository.findByUser_Id(user.getId()).stream().map(this::mapToResponseDto).toList();
+		return this.orderRepository.findByUser_Id(user.getId())
+								   .stream()
+								   .map(this::mapToResponseDto)
+								   .toList();
 	}
 
 	// Get order details by order id
@@ -157,15 +205,20 @@ public class OrderServicesImpl implements IOrderServices {
 		User user = this.getCurrentUser();
 
 		Order order = this.orderRepository.findById(orderId)
-				.orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+										  .orElseThrow(
+												  () -> new ResourceNotFoundException(
+														  		"Order not found")
+										  );
 
 		// Ensure order belongs to current user
-		if (!order.getUser().getId().equals(user.getId())) {
+		if (!order.getUser()
+				  .getId()
+				  .equals(user.getId())) {
 
-			throw new IllegalArgumentException("Unauthorized access");
+			throw new AccessDeniedException(
+						"You are not authorized to access this cart item");
 		}
 
 		return this.mapToResponseDto(order);
 	}
-
 }
