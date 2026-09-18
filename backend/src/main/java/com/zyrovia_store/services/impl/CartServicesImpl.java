@@ -83,13 +83,16 @@ public class CartServicesImpl implements ICartServices {
 
 	// Get currently logged-in user
 	private User getCurrentUser() {
-		
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
-		String email = authentication.getName();
-		
-		return this.userRepository.findByEmail(email)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found with email : " + email));
+
+	    String email = authentication.getName();
+
+	    return this.userRepository.findByEmail(email)
+	            .orElseThrow(
+	            		() -> new ResourceNotFoundException(
+	            				"User not found with email : " + email)
+	            	);
 	}
 
 	// Add product to current user's cart
