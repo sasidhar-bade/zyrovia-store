@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -111,16 +113,17 @@ public class CartServicesImpl implements ICartServices {
 	}
 
 	// Get currently logged-in user
-	// Temporary implementation using hardcoded user id
-	// Later replace with JWT Authentication
 	private User getCurrentUser() {
 
-		Long userId = 1l; // Temporary
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-		User user = this.userRepository.findById(userId)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
+	    String email = authentication.getName();
 
-		return user;
+	    return this.userRepository.findByEmail(email)
+	            .orElseThrow(
+	            		() -> new ResourceNotFoundException(
+	            				"User not found with email : " + email)
+	            	);
 	}
 
 	// Add product to current user's cart
